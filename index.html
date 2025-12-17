@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্টেপ মেকার ক্যালকুলেটর</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    header {
+      background: #00b0ff;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .form {
+      padding: 20px;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #007bb5;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #b3e5fc;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      border-color: #00b0ff;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #00b0ff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0091ea;
+    }
+    .results {
+      background: #e1f5fe;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+      border-left: 5px solid #00b0ff;
+    }
+    .results h3 {
+      color: #007bb5;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .step {
+      background: #fff;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-size: 1.1rem;
+    }
+    .total {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #007bb5;
+      text-align: center;
+      margin-top: 20px;
+      padding: 15px;
+      background: #b3e5fc;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>💸📊Wingo hack ক্যালকুলেটর📊💸</header>
+    
+    <div class="form">
+      <label for="money">মোট টাকা (৳)💸:</label>
+      <input type="number" id="money" value="300" min="1">
+      
+      <label for="steps">স্টেপ সংখ্যা ⌨️:</label>
+      <input type="number" id="steps" value="5" min="1" max="20">
+      
+      <button onclick="calculate()">স্টেপ তৈরি করুন</button>
+    </div>
+    
+    <div class="results" id="results">
+      <h3>স্টেপ রেজাল্ট:</h3>
+      <div id="stepsList"></div>
+      <div class="total" id="total"></div>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      const totalMoney = parseFloat(document.getElementById('money').value);
+      const numSteps = parseInt(document.getElementById('steps').value);
+      
+      if (isNaN(totalMoney) || isNaN(numSteps) || totalMoney <= 0 || numSteps <= 0) {
+        alert('দয়া করে সঠিক সংখ্যা দিন');
+        return;
+      }
+      
+      // সঠিক লজিক: জিওমেট্রিক সিরিজ (1 + 2 + 4 + ... + 2^(n-1)) = 2^n - 1
+      const denominator = Math.pow(2, numSteps) - 1;
+      const firstStep = totalMoney / denominator;
+      
+      const stepsList = document.getElementById('stepsList');
+      stepsList.innerHTML = ''; // পুরানো রেজাল্ট মুছে ফেলি
+      
+      let current = firstStep;
+      
+      for (let i = 1; i <= numSteps; i++) {
+        // প্রতিটি স্টেপ ২ দশমিক পর্যন্ত রাউন্ড করি
+        const value = Math.round(current * 100) / 100;
+        
+        // টেক্সট সঠিকভাবে তৈরি করি (template literal ব্যবহার করে)
+        const text = "স্টেপ " + i + ":     -  " + value.toFixed(2) + " ৳  💸";
+        
+        // নতুন div তৈরি করে টেক্সট যোগ করি
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'step';
+        stepDiv.textContent = text;
+        stepsList.appendChild(stepDiv);
+        
+        current *= 2; // পরের স্টেপের জন্য ডাবল করি
+      }
+      
+      document.getElementById('total').textContent = "মোট ব্যবহৃত: " + totalMoney.toFixed(2) + " ৳ ";
+      
+      document.getElementById('results').style.display = 'block';
+    }
+    
+    // পেজ লোড হলে অটো ক্যালকুলেট করি
+    window.onload = function() {
+      calculate();
+    };
+  </script>
+</body>
+</html>
